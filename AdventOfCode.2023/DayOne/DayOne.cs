@@ -44,30 +44,53 @@ public class DayOne : IDay
     private static void PartTwo(string input)
     {
         _ = input.Split(Environment.NewLine)
-            .Select(SpelledOutDigitsToDigits)
+            .Select(FirstSpelledOutDigitToDigit)
+            .Select(LastSpelledOutDigitToDigit)
             .Select(line => line
                 .Trim()
                 .Where(character => char.IsDigit(character)))
             .Select(character => $"{character.First()}{character.Last()}")
             .Select(int.Parse)
             .Sum()
-            .Log($"Day one {nameof(PartTwo)}  result: {{0}}");
+            .Log($"Day one {nameof(PartTwo)} result: {{0}}");
     }
 
-    private static string SpelledOutDigitsToDigits(string input)
+    private static string FirstSpelledOutDigitToDigit(string input)
     {
-        _spelledOutDigits
-            .OrderByDescending(entry => input.IndexOf(entry.Key, StringComparison.OrdinalIgnoreCase))
-            .Reverse()
-            .ToList()
-            .ForEach((value) => input = input.Replace(value.Key, value.Value.ToString(), StringComparison.OrdinalIgnoreCase));
+        ((string firstSpelledOutDigit, int firstDigit), int _) = _spelledOutDigits
+            .Select(entry => (entry, input.IndexOf(entry.Key, StringComparison.OrdinalIgnoreCase)))
+            .Where(s => s.Item2 >= 0)
+            .OrderBy(s => s.Item2)
+            .FirstOrDefault();
 
-        _spelledOutDigits
-            .OrderByDescending(entry => input.LastIndexOf(entry.Key, StringComparison.OrdinalIgnoreCase))
-            .Reverse()
-            .ToList()
-            .ForEach((value) => input = input.Replace(value.Key, value.Value.ToString(), StringComparison.OrdinalIgnoreCase));
+        return string.IsNullOrEmpty(firstSpelledOutDigit)
+            ? input
+            : input.Replace(firstSpelledOutDigit, firstDigit.ToString(), StringComparison.OrdinalIgnoreCase);
+    }
 
-        return input;
+    private static string LastSpelledOutDigitToDigit(string input)
+    {
+        IEnumerable<(KeyValuePair<string, int> entry, int)> enumerable = _spelledOutDigits
+            .Select(entry => (entry, input.LastIndexOf(entry.Key, StringComparison.OrdinalIgnoreCase)))
+            // Go to check for the overlapping cases and the take the first
+            .Where(entry => ())
+            .Where(s => s.Item2 >= 0);
+
+        IEnumerable<(KeyValuePair<string, int> entry, int)> enumerable1 = enumerable;
+
+        if (enumerable.Count() > 1)
+        {
+            enumerable1 = enumerable
+                .OrderByDescending(s => s.Item2)
+                .Skip(1)
+                .Take(1);
+        }
+
+        ((string lastSpelledOutDigit, int lastDigit), int _) = enumerable1
+            .FirstOrDefault();
+
+        return string.IsNullOrEmpty(lastSpelledOutDigit)
+            ? input
+            : input.Replace(lastSpelledOutDigit, lastDigit.ToString(), StringComparison.OrdinalIgnoreCase);
     }
 }
