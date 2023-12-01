@@ -9,10 +9,7 @@ public class DayOne : IDay
                 .Trim()
                 .ToCharArray()
                 .Where(character => char.IsDigit(character)))
-            .Select(character =>
-                character.Count() == 1
-                    ? $"{character.First()}{character.First()}"
-                    : $"{character.First()}{character.Last()}")
+            .Select(character => $"{character.First()}{character.Last()}")
             .Select(int.Parse)
             .Sum()
             .Log("Day one result: {0}");
