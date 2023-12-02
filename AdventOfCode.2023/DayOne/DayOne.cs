@@ -72,8 +72,6 @@ public class DayOne : IDay
     {
         IEnumerable<(KeyValuePair<string, int> entry, int)> enumerable = _spelledOutDigits
             .Select(entry => (entry, input.LastIndexOf(entry.Key, StringComparison.OrdinalIgnoreCase)))
-            // Go to check for the overlapping cases and the take the first
-            .Where(entry => ())
             .Where(s => s.Item2 >= 0);
 
         IEnumerable<(KeyValuePair<string, int> entry, int)> enumerable1 = enumerable;

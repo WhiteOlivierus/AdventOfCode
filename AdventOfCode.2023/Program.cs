@@ -1,16 +1,28 @@
 ﻿using AdventOfCode._2023;
 using AdventOfCode._2023.DayOne;
 
-new List<IDay>
+new Dictionary<IDay, IEnumerable<(string, Part)>>
 {
-    new DayOne()
+    //{
+    //    new DayOne(),
+    //    new List<(string,Part)>
+    //    {
+    //        (File.ReadAllText($"{nameof(DayOne)}/SampleData1.txt"), Part.One),
+    //        (File.ReadAllText($"{nameof(DayOne)}/Data1.txt"), Part.One),
+    //        (File.ReadAllText($"{nameof(DayOne)}/SampleData2.txt"), Part.Two),
+    //        (File.ReadAllText($"{nameof(DayOne)}/Data2.txt"), Part.Two),
+    //    }
+    //},
+    {
+        new DayTwo(),
+        new List<(string,Part)>
+        {
+            (File.ReadAllText($"{nameof(DayTwo)}/SampleData1.txt"), Part.One),
+            (File.ReadAllText($"{nameof(DayTwo)}/Data1.txt"), Part.One),
+        }
+    }
 }
-.ForEach(day =>
-{
-    string dayName = day.GetType().Name;
-
-    day.Execute(File.ReadAllText($"{dayName}/{dayName}SampleData1.txt"), Part.One);
-    day.Execute(File.ReadAllText($"{dayName}/{dayName}Data1.txt"), Part.One);
-    day.Execute(File.ReadAllText($"{dayName}/{dayName}SampleData2.txt"), Part.Two);
-    day.Execute(File.ReadAllText($"{dayName}/{dayName}Data2.txt"), Part.Two);
-});
+.ToList()
+.ForEach(entry => entry.Value
+    .ToList()
+    .ForEach(parameters => entry.Key.Execute(parameters.Item1, parameters.Item2)));
